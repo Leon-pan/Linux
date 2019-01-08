@@ -20,7 +20,7 @@ Init(){
 	echo -e "echo never > /sys/kernel/mm/transparent_hugepage/defrag\necho never > /sys/kernel/mm/transparent_hugepage/enabled" >> /etc/rc.d/rc.local
 	chmod +x /etc/rc.d/rc.local
 
-	#不使用swap分区
+	#不使用swap分区,设置为0或1
 	sysctl vm.swappiness=0 > /dev/null
 	echo "vm.swappiness=0" >> /etc/sysctl.conf
 	echo -e  "${GREEN}执行完毕~${RES}"
