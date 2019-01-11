@@ -1,3 +1,5 @@
+https://blog.csdn.net/jxdl6655/article/details/78194191
+
 vi /etc/hosts
 127.0.0.1 HOSTNAME
 
