@@ -28,7 +28,7 @@ rabbitmq-server -detached
 rabbitmqctl add_user admin 1q2w3e4r
 rabbitmqctl set_permissions -p "/" admin ".*" ".*" ".*"
 rabbitmqctl set_user_tags admin administrator
-
+http://ip:15672
 
 node2# rabbitmqctl stop_app
 
@@ -36,8 +36,7 @@ node2# rabbitmqctl join_cluster rabbit@project
 
 node2# rabbitmqctl start_app
 
-
-
+rabbitmqctl cluster_status
 
 
 
