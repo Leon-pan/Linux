@@ -222,19 +222,19 @@ Install_CMS(){
 				mkdir -p /usr/share/java
 				\cp -f mysql-connector-java-*.jar /usr/share/java/
 				ln -s /usr/share/java/mysql-connector-java-*.jar /usr/share/java/mysql-connector-java.jar
-				#全局_jdbc
+				##全局_jdbc
 				#\cp -f mysql-connector-java-*.jar /usr/java/jdk1.8/jre/lib/ext
 				#\cp -f mysql-connector-java-*.jar /usr/share/cmf/lib
 				#mkdir -p /usr/share/java
 				#\cp -f mysql-connector-java-*.jar /usr/share/java/
 				#ln -s /usr/share/java/mysql-connector-java-*.jar /usr/share/java/mysql-connector-java.jar
-				#hive_jdbc
+				##hive_jdbc
 				#\cp -f mysql-connector-java-*.jar /opt/cloudera/parcels/CDH-5.14.2-1.cdh5.14.2.p0.3/lib/hive/lib
-				#oozie_jdbc
+				##oozie_jdbc
 				#mkdir -p /usr/share/java
 				#\cp -f mysql-connector-java-*.jar /usr/share/java
 				#ln -s /usr/share/java/mysql-connector-java-*.jar /usr/share/java/mysql-connector-java.jar
-				#oracle_jdbc
+				##oracle_jdbc
 				#/usr/share/java/oracle-connector-java.jar
 				echo -e  "${GREEN}初始化CM5的数据库，请输入数据库服务器的地址${RES}"
 				read -p "（默认：localhost）：" mysqlip
