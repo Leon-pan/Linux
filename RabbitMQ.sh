@@ -40,6 +40,11 @@ node2# rabbitmqctl start_app
 
 rabbitmqctl cluster_status
 
+rabbitmqctl environment命令打印有效配置
 
+vi /usr/local/bin/rabbitmq_server-3.6.15/etc/rabbitmq/rabbitmq-env.conf
+[
+  {rabbit, [{RABBITMQ_USE_LONGNAME, [true]}]}
+].
 
 epmd -kill
