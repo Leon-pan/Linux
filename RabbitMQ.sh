@@ -13,7 +13,7 @@ cd otp_src_20.3
 make && make install
 cd /home
 tar -xvf rabbitmq-server-generic-unix-3.6.15.tar -C /usr/local/bin/
-echo "export PATH=$PATH:/usr/local/bin/erlang/bin:/usr/local/bin/rabbitmq_server-3.6.15/sbin" >> /etc/profile
+echo 'export PATH=$PATH:/usr/local/bin/erlang/bin:/usr/local/bin/rabbitmq_server-3.6.15/sbin' >> /etc/profile
 source /etc/profile
 
 
@@ -43,8 +43,19 @@ rabbitmqctl cluster_status
 rabbitmqctl environment命令打印有效配置
 
 vi /usr/local/bin/rabbitmq_server-3.6.15/etc/rabbitmq/rabbitmq-env.conf
+#长域名
 [
   {rabbit, [{RABBITMQ_USE_LONGNAME, [true]}]}
+].
+
+vi /usr/local/bin/rabbitmq_server-3.6.15/etc/rabbitmq/rabbitmq.config
+#集群
+[
+ {rabbit, [
+           {cluster_nodes, {['rabbit@es01',
+                             'rabbit@es02',
+                             'rabbit@es03'], disc}}
+          ]}
 ].
 
 epmd -kill
