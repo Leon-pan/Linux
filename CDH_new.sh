@@ -237,9 +237,9 @@ Install_CMS(){
 				##oracle_jdbc
 				#/usr/share/java/oracle-connector-java.jar
 				echo -e  "${GREEN}初始化CM5的数据库，请输入数据库服务器的地址${RES}"
-				read -p "（默认：localhost）：" mysqlip
+				read -p "（默认：localhost回车即可）：" mysqlip
 				[[ -z "${mysqlip}" ]] && mysqlip="localhost"
-				/usr/share/cmf/schema/scm_prepare_database.sh mysql cm -h$mysqlip -uroot -p --scm-host localhost scm scm scm
+				/usr/share/cmf/schema/scm_prepare_database.sh mysql scm -h$mysqlip -uroot -p --scm-host localhost scm scm scm
 				echo -e  "${GREEN}正在启动Cloudera Manager Server，请稍等~${RES}"
 				systemctl start cloudera-scm-server
 				echo -e  "${GREEN}执行完毕~${RES}"

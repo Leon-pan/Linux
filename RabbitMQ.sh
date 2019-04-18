@@ -40,7 +40,8 @@ node2# rabbitmqctl start_app
 
 rabbitmqctl cluster_status
 
-rabbitmqctl environment命令打印有效配置
+#打印有效配置
+rabbitmqctl environment
 
 vi /usr/local/bin/rabbitmq_server-3.6.15/etc/rabbitmq/rabbitmq-env.conf
 #长域名
