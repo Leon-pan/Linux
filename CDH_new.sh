@@ -41,23 +41,26 @@ Copy_SSH() {
 
 Install_JAVA() {
 	#安装JAVA并配置环境
-	if [ ! -f jdk-8u*.tar.gz ]; then
-		yum -y install wget
-		wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.tar.gz"
+	if [ -f jdk-8u*.tar.gz ]; then
+		mkdir -p /usr/java/
+		tar -xvf jdk-8u*.tar.gz -C /usr/java/
+		mv /usr/java/jdk1.8*/ /usr/java/jdk1.8/
+		if ! grep "JAVA_HOME=/usr/java/jdk1.8" /etc/profile > /dev/null 2>&1; then
+			echo -e '\n#JAVA_PATH\nexport JAVA_HOME=/usr/java/jdk1.8\nexport JRE_HOME=${JAVA_HOME}/jre\nexport CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib\nexport PATH=${JAVA_HOME}/bin:$PATH' >> /etc/profile
+		fi
+		source /etc/profile
+		echo -e "${GREEN}建议执行source /etc/profile命令使JAVA环境立即生效~${RES}"
+	else
+		echo -e "${RED}当前目录未找到jdk-8u*.tar.gz${RES}"
+		#jdk1.8下载链接失效
+		#yum -y install wget
+		#wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.tar.gz"
 	fi
-	mkdir -p /usr/java/
-	tar -xvf jdk-8u*.tar.gz -C /usr/java/
-	mv /usr/java/jdk1.8*/ /usr/java/jdk1.8/
-	if ! grep "JAVA_HOME=/usr/java/jdk1.8" /etc/profile > /dev/null 2>&1; then
-		echo -e '\n#JAVA_PATH\nexport JAVA_HOME=/usr/java/jdk1.8\nexport JRE_HOME=${JAVA_HOME}/jre\nexport CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib\nexport PATH=${JAVA_HOME}/bin:$PATH' >> /etc/profile
-	fi
-	source /etc/profile
-	echo -e "${GREEN}建议执行source /etc/profile命令使JAVA环境立即生效~${RES}"
 }
 
 Install_NTP() {
 	#安装NTP并设置开机启动，后期考虑使用chrony代替NTP
-	if ls | grep ntp > /dev/null 2>&1; then
+	if [ -d *ntp* ]; then
 		echo -e "${GREEN}检测到ntp，开始配置本地yum源${RES}"
 		read -p "Do you want to continue [Y/N]?" answer
 		case $answer in
@@ -65,7 +68,7 @@ Install_NTP() {
 			mkdir /root/yum_bak > /dev/null 2>&1
 			mv -f /etc/yum.repos.d/* /root/yum_bak
 			cat > /etc/yum.repos.d/ntp.repo <<- 'EOF'
-				[ntp]
+				[local-ntp]
 				name=ntp
 				baseurl=file:///root/ntp/
 				enabled=1
@@ -96,7 +99,7 @@ Install_NTP() {
 
 Install_HTTP() {
 	#安装HTTP并设置开机启动
-	if ls | grep httpd > /dev/null 2>&1; then
+	if [ -d *httpd* ]; then
 		echo -e "${GREEN}检测到httpd，开始配置本地yum源${RES}"
 		read -p "Do you want to continue [Y/N]?" answer
 		case $answer in
@@ -104,7 +107,7 @@ Install_HTTP() {
 			mkdir /root/yum_bak > /dev/null 2>&1
 			mv -f /etc/yum.repos.d/* /root/yum_bak
 			cat > /etc/yum.repos.d/httpd.repo <<- 'EOF'
-				[httpd]
+				[local-httpd]
 				name=httpd
 				baseurl=file:///root/httpd/
 				enabled=1
@@ -135,7 +138,7 @@ Install_HTTP() {
 
 Install_MYSQL5.6() {
 	#安装MYSQL并设置开机启动
-	if ls | grep mysql5.6 > /dev/null 2>&1; then
+	if [ -d *mysql5.6* ]; then
 		echo -e "${GREEN}检测到mysql5.6，开始配置本地yum源${RES}"
 		read -p "Do you want to continue [Y/N]?" answer
 		case $answer in
@@ -144,7 +147,7 @@ Install_MYSQL5.6() {
 			mv -f /etc/yum.repos.d/* /root/yum_bak
 			cat > /etc/yum.repos.d/mysql56.repo <<- 'EOF'
 				# Enable to use MySQL 5.6
-				[mysql56-community]
+				[local-mysql56-community]
 				name=MySQL 5.6 Community Server
 				baseurl=file:///root/mysql5.6
 				enabled=1
@@ -194,14 +197,14 @@ Install_CMS() {
 		case $answer in
 		Y | y)
 			#本地已安装httpd服务，建立cm的内网yum源，并安装
-			if ls | grep cm > /dev/null 2>&1; then
+			if [ -d cm* ]; then
 				mkdir /root/yum_bak > /dev/null 2>&1
 				mv -f /etc/yum.repos.d/* /root/yum_bak
 				mv -f cm* cm > /dev/null 2>&1
 				\cp -rf cm /var/www/html
 				read -p "请输入本机的地址：" localhostip
 				cat > /etc/yum.repos.d/cm.repo <<- EOF
-					[cm]
+					[local-cm]
 					name=Cloudera Manager
 					baseurl=http://$localhostip/cm 
 					enabled=1
@@ -258,7 +261,7 @@ Install_CMS() {
 		mv -f /etc/yum.repos.d/* /root/yum_bak
 		mv -f cm* cm > /dev/null 2>&1
 		cat > /etc/yum.repos.d/cm.repo <<- EOF
-			[cm]
+			[local-cm]
 			name=Cloudera Manager
 			baseurl=file:///root/cm
 			enabled=1
