@@ -130,7 +130,6 @@ Install_HTTP() {
 		yum -y install httpd
 		echo -e "${GREEN}正在启动httpd，请稍等~${RES}"
 		systemctl start httpd
-		systemctl enable httpd > /dev/null 2>&1
 		echo -e "${GREEN}执行完毕~${RES}"
 	fi
 }
