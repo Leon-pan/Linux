@@ -195,60 +195,48 @@ Install_MYSQL5.6() {
 Install_CMS() {
 	#本地检测到cm安装包
 	if [ -d cm* ]; then
-	elif rpm -qa | grep httpd > /dev/null 2>&1; then
-		systemctl restart httpd
-		read -p "检测到本机已安装httpd服务，是否建立内网yum源 [Y/N]?" answer
-		case $answer in
-		Y | y)
-			#本地已安装httpd服务，建立cm的内网yum源
-			mkdir /root/yum_bak > /dev/null 2>&1
-			mv -f /etc/yum.repos.d/* /root/yum_bak
-			mv -f cm* cm > /dev/null 2>&1
-			\cp -rf cm /var/www/html
-			read -p "请输入本机的地址：" localhostip
-			#该处EOF加单引号会使localhostip变量失效
-			cat > /etc/yum.repos.d/cm.repo <<- EOF
-				[local-cm]
-				name=Cloudera Manager
-				baseurl=http://$localhostip/cm
-				enabled=1
-				gpgcheck=0
-			EOF
-			yum -y install cloudera-manager-server cloudera-manager-daemons
-			\cp -f /root/yum_bak/* /etc/yum.repos.d/
-			if [ -f *mysql-connector-java* ]; then
-				echo -e "${GREEN}检测到mysql-connector-java开始初始化CM5的数据库${RES}"
-				\cp -f mysql-connector-java-*.jar /usr/share/cmf/lib/
-				mkdir -p /usr/share/java
-				\cp -f mysql-connector-java-*.jar /usr/share/java/
-				ln -s /usr/share/java/mysql-connector-java-*.jar /usr/share/java/mysql-connector-java.jar
-				##全局_jdbc
-				#\cp -f mysql-connector-java-*.jar /usr/java/jdk1.8/jre/lib/ext
-				#\cp -f mysql-connector-java-*.jar /usr/share/cmf/lib
-				#mkdir -p /usr/share/java
-				#\cp -f mysql-connector-java-*.jar /usr/share/java/
-				#ln -s /usr/share/java/mysql-connector-java-*.jar /usr/share/java/mysql-connector-java.jar
-				##hive_jdbc
-				#\cp -f mysql-connector-java-*.jar /opt/cloudera/parcels/CDH-5.14.2-1.cdh5.14.2.p0.3/lib/hive/lib
-				##oozie_jdbc
-				#mkdir -p /usr/share/java
-				#\cp -f mysql-connector-java-*.jar /usr/share/java
-				#ln -s /usr/share/java/mysql-connector-java-*.jar /usr/share/java/mysql-connector-java.jar
-				##oracle_jdbc
-				#/usr/share/java/oracle-connector-java.jar
-				echo -e "${GREEN}初始化CM5的数据库，请输入数据库服务器的地址${RES}"
-				read -p "（默认：localhost回车即可）：" mysqlip
-				[[ -z "${mysqlip}" ]] && mysqlip="localhost"
-				/usr/share/cmf/schema/scm_prepare_database.sh mysql scm -h$mysqlip -uroot -p --scm-host localhost scm scm scm
-				echo -e "${GREEN}正在启动Cloudera Manager Server，请稍等~${RES}"
-				systemctl start cloudera-scm-server
-				echo -e "${GREEN}执行完毕~${RES}"
-			else
-				echo -e "${RED}未检测到mysql-connector-java，请使用命令手动初始化CM5的数据库：/usr/share/cmf/schema/scm_prepare_database.sh mysql scm -hlocalhost -uroot -p --scm-host localhost scm scm scm${RES}"
-			fi
-			;;
-		N | n)
-			#本地已安装httpd服务，但不建立cm的内网yum源
+		if rpm -qa | grep httpd > /dev/null 2>&1; then
+			systemctl restart httpd
+			read -p "检测到本机已安装httpd服务，是否建立内网yum源 [Y/N]?" answer
+			case $answer in
+			Y | y)
+				#本地已安装httpd服务，建立cm的内网yum源
+				mkdir /root/yum_bak > /dev/null 2>&1
+				mv -f /etc/yum.repos.d/* /root/yum_bak
+				mv -f cm* cm > /dev/null 2>&1
+				\cp -rf cm /var/www/html
+				read -p "请输入本机的地址：" localhostip
+				#该处EOF加单引号会使localhostip变量失效
+				cat > /etc/yum.repos.d/cm.repo <<- EOF
+					[local-cm]
+					name=Cloudera Manager
+					baseurl=http://$localhostip/cm
+					enabled=1
+					gpgcheck=0
+				EOF
+				Yum_Install
+				\cp -f /root/yum_bak/* /etc/yum.repos.d/
+				;;
+			N | n)
+				#本地已安装httpd服务，但不建立cm的内网yum源
+				mkdir /root/yum_bak > /dev/null 2>&1
+				mv -f /etc/yum.repos.d/* /root/yum_bak
+				mv -f cm* cm > /dev/null 2>&1
+				cat > /etc/yum.repos.d/cm.repo <<- 'EOF'
+					[local-cm]
+					name=Cloudera Manager
+					baseurl=file:///root/cm
+					enabled=1
+					gpgcheck=0
+				EOF
+				Yum_Install
+				\cp -f /root/yum_bak/* /etc/yum.repos.d/
+				;;
+			*)
+				echo -e "${RED}ERROR${RES}"
+				;;
+			esac
+		else
 			mkdir /root/yum_bak > /dev/null 2>&1
 			mv -f /etc/yum.repos.d/* /root/yum_bak
 			mv -f cm* cm > /dev/null 2>&1
@@ -259,51 +247,48 @@ Install_CMS() {
 				enabled=1
 				gpgcheck=0
 			EOF
-			yum -y install cloudera-manager-server cloudera-manager-daemons
+			Yum_Install
 			\cp -f /root/yum_bak/* /etc/yum.repos.d/
-			if [ -f *mysql-connector-java* ]; then
-				echo -e "${GREEN}检测到mysql-connector-java开始初始化CM5的数据库${RES}"
-				\cp -f mysql-connector-java-*.jar /usr/share/cmf/lib/
-				mkdir -p /usr/share/java
-				\cp -f mysql-connector-java-*.jar /usr/share/java/
-				ln -s /usr/share/java/mysql-connector-java-*.jar /usr/share/java/mysql-connector-java.jar
-				echo -e "${GREEN}初始化CM5的数据库，请输入数据库服务器的地址${RES}"
-				read -p "（默认：localhost）：" mysqlip
-				[[ -z "${mysqlip}" ]] && mysqlip="localhost"
-				/usr/share/cmf/schema/scm_prepare_database.sh mysql scm -h$mysqlip -uroot -p --scm-host localhost scm scm scm
-				echo -e "${GREEN}正在启动Cloudera Manager Server，请稍等~${RES}"
-				systemctl start cloudera-scm-server
-				echo -e "${GREEN}执行完毕~${RES}"
-			else
-				echo -e "${RED}未检测到mysql-connector-java，请使用命令手动初始化CM5的数据库：/usr/share/cmf/schema/scm_prepare_database.sh mysql scm -hlocalhost -uroot -p --scm-host localhost scm scm scm${RES}"
-			fi
-			;;
-		*)
-			echo -e "${RED}ERROR${RES}"
-			;;
-		esac
-	fi
-
+		fi
 	else
-	#本地未检测到cm安装包
-	cat > /etc/yum.repos.d/cloudera-manager.repo <<- 'EOF'
-		[cloudera-manager]
-		# Packages for Cloudera Manager, Version 5, on RedHat or CentOS 7 x86_64           	  
-		name=Cloudera Manager
-		baseurl=http://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.14.2
-		enabled=1
-		gpgcheck = 0
-	EOF
-	yum install cloudera-manager-server cloudera-manager-daemons
+		#本地未检测到cm安装包
+		cat > /etc/yum.repos.d/cloudera-manager.repo <<- 'EOF'
+			[cloudera-manager]
+			# Packages for Cloudera Manager, Version 5, on RedHat or CentOS 7 x86_64           	  
+			name=Cloudera Manager
+			baseurl=http://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.14.2
+			enabled=1
+			gpgcheck = 0
+		EOF
+		Yum_Install
+	fi
+}
+
+Yum_Install() {
+	yum -y install cloudera-manager-server cloudera-manager-daemons
 	if [ -f *mysql-connector-java* ]; then
 		echo -e "${GREEN}检测到mysql-connector-java开始初始化CM5的数据库${RES}"
 		\cp -f mysql-connector-java-*.jar /usr/share/cmf/lib/
 		mkdir -p /usr/share/java
 		\cp -f mysql-connector-java-*.jar /usr/share/java/
 		ln -s /usr/share/java/mysql-connector-java-*.jar /usr/share/java/mysql-connector-java.jar
+		##全局_jdbc
+		#\cp -f mysql-connector-java-*.jar /usr/java/jdk1.8/jre/lib/ext
+		#\cp -f mysql-connector-java-*.jar /usr/share/cmf/lib
+		#mkdir -p /usr/share/java
+		#\cp -f mysql-connector-java-*.jar /usr/share/java/
+		#ln -s /usr/share/java/mysql-connector-java-*.jar /usr/share/java/mysql-connector-java.jar
+		##hive_jdbc
+		#\cp -f mysql-connector-java-*.jar /opt/cloudera/parcels/CDH-5.14.2-1.cdh5.14.2.p0.3/lib/hive/lib
+		##oozie_jdbc
+		#mkdir -p /usr/share/java
+		#\cp -f mysql-connector-java-*.jar /usr/share/java
+		#ln -s /usr/share/java/mysql-connector-java-*.jar /usr/share/java/mysql-connector-java.jar
+		##oracle_jdbc
+		#/usr/share/java/oracle-connector-java.jar
 		echo -e "${GREEN}初始化CM5的数据库，请输入数据库服务器的地址${RES}"
-		read -p "（若数据库为本地数据库请直接回车）：" mysqlip
-		[[ -z "${mysqlip}" ]] && mysqlip="localhost"
+		read -p "（默认：localhost回车即可）：" mysqlip
+		[ -z "${mysqlip}" ] && mysqlip="localhost"
 		/usr/share/cmf/schema/scm_prepare_database.sh mysql scm -h$mysqlip -uroot -p --scm-host localhost scm scm scm
 		echo -e "${GREEN}正在启动Cloudera Manager Server，请稍等~${RES}"
 		systemctl start cloudera-scm-server
