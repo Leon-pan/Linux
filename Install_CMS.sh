@@ -43,6 +43,22 @@ Copy_SSH() {
 	echo -e "${GREEN}执行完毕~${RES}"
 }
 
+#不使用expect无法传入密码，暂时搁置
+#Copy_SSH() {
+#	read -p "请输入需要复制SSH密钥服务器的密码：" PASSWORD
+#	if [ ! -f "hosts" ]; then
+#		echo -e "${RED}请将$0与hosts置于同一目录${RES}"
+#		exit 1
+#	elif [ -z $PASSWORD ]; then
+#		echo -e "${RED}请输入密码${RES}"
+#		exit 1
+#	fi
+#	for ip in $(cat "hosts"); do
+#		ssh-copy-id -i ~/.ssh/id_rsa.pub root@$ip
+#	done
+#	echo -e "${GREEN}执行完毕~${RES}"
+#}
+
 Install_JAVA() {
 	#安装JAVA并配置环境
 	if [ -f jdk-8u*.tar.gz ]; then
@@ -299,6 +315,13 @@ Yum_Install() {
 }
 
 date
+#用户、目录检查
+user=$(whoami)
+dir=$(dirname $(readlink -f $0))
+if [ ! "$user" == "root" ] || [ ! "$dir" == /root ]; then
+	echo -e "${RED}当前用户或目录不为root${RES}"
+	exit 1
+fi
 echo -e "\n	${RED}CDH安装脚本${RES}
 	${GREEN}1.${RES} 初始化系统环境${RED}[必需]
 	${GREEN}2.${RES} 生成SSH密钥
