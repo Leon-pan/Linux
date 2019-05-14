@@ -6,6 +6,10 @@ RED='\E[1;31m'   #红
 RES='\E[0m'
 
 Init() {
+	#禁用记录文件访问时间
+	#/dev/sdb1 /data1 ext4 defaults,noatime 0
+	#mount -o remount /data1
+
 	#关闭selinux
 	setenforce 0
 	sed -i '/^SELINUX=/c\SELINUX=disabled' /etc/selinux/config
@@ -14,7 +18,7 @@ Init() {
 	systemctl stop firewalld
 	systemctl disable firewalld > /dev/null 2>&1
 
-	#禁用大内存页面
+	#禁用Transparent Huge Pages特性
 	echo never > /sys/kernel/mm/transparent_hugepage/defrag
 	echo never > /sys/kernel/mm/transparent_hugepage/enabled
 	echo -e "echo never > /sys/kernel/mm/transparent_hugepage/defrag\necho never > /sys/kernel/mm/transparent_hugepage/enabled" >> /etc/rc.d/rc.local
