@@ -7,7 +7,7 @@ ETH2=enp4s0f1
 #ETH3=eno3
 #ETH4=eno4
 modprobe bonding
-cat <<EOF> /etc/sysconfig/network-scripts/ifcfg-bond0
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-bond0
 DEVICE=bond0
 TYPE=Bond
 NAME=bond0
@@ -30,7 +30,7 @@ EOF
 #ONBOOT=yes
 #BONDING_OPTS="mode=0 miimon=100"
 #EOF
-cat <<EOF> /etc/sysconfig/network-scripts/ifcfg-$ETH1
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-$ETH1
 TYPE=Ethernet
 BOOTPROTO=none
 DEVICE=$ETH1
@@ -38,7 +38,7 @@ ONBOOT=yes
 MASTER=bond0
 SLAVE=yes
 EOF
-cat <<EOF> /etc/sysconfig/network-scripts/ifcfg-$ETH2
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-$ETH2
 TYPE=Ethernet
 BOOTPROTO=none
 DEVICE=$ETH2
