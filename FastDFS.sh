@@ -1,5 +1,5 @@
 #tracker
-yum -y install make cmake gcc gcc-c++ openssl-devel
+yum -y install make cmake gcc gcc-c++ openssl-devel perl-devel
 
 unzip
 
@@ -23,7 +23,7 @@ ll /data/fastdfs/tracker
 
 
 #storage
-yum -y install make cmake gcc gcc-c++ openssl-devel
+yum -y install make cmake gcc gcc-c++ openssl-devel perl-devel
 
 unzip
 
