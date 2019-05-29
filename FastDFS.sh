@@ -91,7 +91,7 @@ cp fastdfs-master/conf/http.conf fastdfs-master/conf/mime.types /etc/fdfs/
 #tracker_client
 cp /etc/fdfs/client.conf.sample /etc/fdfs/client.conf
 vi /etc/fdfs/client.conf
-base_path=/data/fastdfs/tracker
+base_path=/data/fastdfs
 tracker_server=10.1.70.91:22122
 tracker_server=10.1.70.92:22122
 
@@ -369,7 +369,7 @@ http {
 upstream fastdfs {
         server 10.1.70.91:10086 weight=1 fail_timeout=20s;
       	server 10.1.70.92:10086 weight=1 fail_timeout=20s; 
-    }   
+    }
     server {
         listen 12580;
         server_name 10.1.20.90;
@@ -379,6 +379,6 @@ upstream fastdfs {
             location = /50x.html {
             root   html;
             }
-        }   
+        }
     }
 ##################fastdfs end##################
