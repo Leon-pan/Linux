@@ -306,11 +306,13 @@ Yum_Install() {
 		read -p "（默认：localhost回车即可）：" mysqlip
 		[ -z "${mysqlip}" ] && mysqlip="localhost"
 		/usr/share/cmf/schema/scm_prepare_database.sh mysql scm -h$mysqlip -uroot -p --scm-host localhost scm scm scm
+		#sudo /opt/cloudera/cm/schema/scm_prepare_database.sh mysql scm scm
+		#sudo /opt/cloudera/cm/schema/scm_prepare_database.sh mysql -h db01.example.com --scm-host cm01.example.com scm scm
 		echo -e "${GREEN}正在启动Cloudera Manager Server，请稍等~${RES}"
 		systemctl start cloudera-scm-server
 		echo -e "${GREEN}执行完毕~${RES}"
 	else
-		echo -e "${RED}未检测到mysql-connector-java，请使用命令手动初始化CM5的数据库：/usr/share/cmf/schema/scm_prepare_database.sh mysql scm -hlocalhost -uroot -p --scm-host localhost scm scm scm${RES}"
+		echo -e "${RED}未检测到mysql-connector-java，请使用命令手动初始化CM5的数据库：/usr/share/cmf/schema/scm_prepare_database.sh mysql scm -h<Mysql Server> -uroot -p --scm-host <Cloudera Manager Server> scm scm scm${RES}"
 	fi
 }
 
