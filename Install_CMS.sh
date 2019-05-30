@@ -10,6 +10,10 @@ Init() {
 	#/dev/sdb1 /data1 ext4 defaults,noatime 0
 	#mount -o remount /data1
 
+	#将DataNode卷的root用户块预留从5％减少到1％
+	#tune2fs -l /dev/sde1 | egrep "Block size:|Reserved block count"
+	#tune2fs -m 1 /dev/sde1
+
 	#关闭selinux
 	setenforce 0
 	sed -i '/^SELINUX=/c\SELINUX=disabled' /etc/selinux/config
