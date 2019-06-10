@@ -54,13 +54,23 @@ ll /data/fastdfs/storage
 fdfs_monitor /etc/fdfs/storage.conf
 
 
+#tracker_client
+cp /etc/fdfs/client.conf.sample /etc/fdfs/client.conf
+vi /etc/fdfs/client.conf
+base_path=/data/fastdfs
+tracker_server=10.1.70.91:22122
+tracker_server=10.1.70.92:22122
+
+fdfs_upload_file /etc/fdfs/client.conf /tmp/test.jpg
+
+
 #nginx
 cd nginx-1.8.1
 ./configure --prefix=/usr/local/nginx --add-module=../fastdfs-nginx-module-master/src
 make & make install
 
 
-#nginx-module
+#fastdfs-nginx-module
 cp fastdfs-nginx-module-master/src/mod_fastdfs.conf /etc/fdfs
 vi /etc/fdfs/mod_fastdfs.conf
 base_path=/data/fastdfs
@@ -88,14 +98,7 @@ cp fastdfs-master/conf/http.conf fastdfs-master/conf/mime.types /etc/fdfs/
 
 
 
-#tracker_client
-cp /etc/fdfs/client.conf.sample /etc/fdfs/client.conf
-vi /etc/fdfs/client.conf
-base_path=/data/fastdfs
-tracker_server=10.1.70.91:22122
-tracker_server=10.1.70.92:22122
 
-fdfs_upload_file /etc/fdfs/client.conf /tmp/test.jpg
 
 
 
