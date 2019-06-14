@@ -1,0 +1,11 @@
+/data01/app/hldc/logs/catalina.out {
+    copytruncate
+    daily
+    rotate 3
+    missingok
+    compress
+    size 16M
+}
+
+#测试
+logrotate -vf /etc/logrotate.d/tomcat

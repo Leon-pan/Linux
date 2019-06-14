@@ -1,0 +1,17 @@
+/usr/local/nginx/logs/*.log {
+    monthly
+    dateext
+    missingok
+    rotate 2
+    compress
+    notifempty
+    sharedscripts
+    postrotate
+    if [ -f /usr/local/nginx/logs/nginx.pid ]; then
+        kill -USR1 `cat /usr/local/nginx/logs/nginx.pid`
+    fi
+    endscript
+}
+
+#测试
+logrotate -vf /etc/logrotate.d/nginx
