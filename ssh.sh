@@ -5,7 +5,7 @@ RED='\E[1;31m'   #红
 RES='\E[0m'
 
 for host in $(cat $1); do
-    echo -e "${GREEN}host:$host${RES}"
+    echo -e "${GREEN}exec '$2' on '$host'${RES}"
     ssh root@$host $2 <<- 'EOF'
 exit
 EOF
