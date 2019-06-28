@@ -1,11 +1,13 @@
 #!/bin/bash
-#by pjl
-#failover.sh
-for host in $(cat /home/failover/ip.txt); do
-    ssh $host > /dev/null 2>&1 <<- 'EOF'
-sed -i '/^server_host=/c\server_host=10.147.113.12' /etc/cloudera-scm-agent/config.ini
-systemctl restart cloudera-scm-agent.service
+
+GREEN='\E[1;32m' #绿
+RED='\E[1;31m'   #红
+RES='\E[0m'
+
+for host in $(cat $1); do
+    echo -e "${GREEN}host:$host${RES}"
+    ssh root@$host $2 <<- 'EOF'
 exit
 EOF
 done
-echo done!
+echo -e "${GREEN}done!${RES}"
