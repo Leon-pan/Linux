@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #备份
 cp -r /etc/ssh{,.old_$(date '+%F')}
 cp /etc/pam.d/sshd{,.old_$(date '+%F')}
@@ -11,7 +13,7 @@ cd openssh-7.9p1
 #编译
 make
 #卸载旧openssh
-rpm  -qa | grep openssh | xargs rpm -e --nodeps
+rpm -qa | grep openssh | xargs rpm -e --nodeps
 #配置
 cp contrib/redhat/sshd.init /etc/init.d/sshd
 chmod 755 /etc/init.d/sshd
