@@ -11,7 +11,7 @@ Init() {
 	#mount -o remount /data1
 
 	#磁盘IO测试，常见的SATA读写速度大概在150MB/S-180MB/S，小于70MB/S较弱
-	#dd bs=1M count=1024 of=/dev/null if=/data1/01 iflag=direct conv=fdatasync
+	#dd if=/dev/zero of=/data/test.dbf bs=8k count=200000 conv=fdatasync
 
 	#将DataNode卷的root用户块预留从5％减少到1％
 	#tune2fs -l /dev/sde1 | egrep "Block size:|Reserved block count"
