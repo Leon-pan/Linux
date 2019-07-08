@@ -41,7 +41,7 @@ Create_SSH() {
 	#设置ssh无密码登陆
 	ssh-keygen -t rsa
 	echo -e "${GREEN}执行完毕~${RES}"
-	ll ~/.ssh/
+	ls -l ~/.ssh/
 }
 
 Copy_SSH() {
