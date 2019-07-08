@@ -7,7 +7,7 @@ RES='\E[0m'
 
 Init() {
 	#禁用记录文件访问时间
-	#/dev/sdb1 /data1 ext4 defaults,noatime 0
+	#/dev/sdb1 /data1 ext4 defaults,noatime 0 0
 	#mount -o remount /data1
 
 	#磁盘IO测试，常见的SATA读写速度大概在150MB/S-180MB/S，小于70MB/S较弱
@@ -16,6 +16,37 @@ Init() {
 	#将DataNode卷的root用户块预留从5％减少到1％
 	#tune2fs -l /dev/sde1 | egrep "Block size:|Reserved block count"
 	#tune2fs -m 1 /dev/sde1
+
+	#Entropy
+	#cat /proc/sys/kernel/random/entropy_avail
+	#yum install rng-tools
+	#vi /etc/sysconfig/rngd
+	#OPTIONS="-r /dev/urandom"
+	#systemctl start rngd
+	#systemctl enable rngd
+	#cat /proc/sys/kernel/random/entropy_avail
+
+	#Network
+	#/etc/sysctl.conf
+	#禁用TCP时间戳以提高CPU利用率
+	#net.ipv4.tcp_timestamps=0
+	#启用TCP sack以提高吞吐量
+	#net.ipv4.tcp_sack=1
+	#增加处理器输入队列的最大长度
+	#net.core.netdev_max_backlog=250000
+	#使用增加TCP max和默认缓冲区大小
+	#net.core.rmem_max=4194304
+	#net.core.wmem_max=4194304
+	#net.core.rmem_default=4194304
+	#net.core_wmem_default=4194304
+	#net.core.optmem_max=4194304
+	#增加内存阈值以防止丢包
+	#net.ipv4.tcp_rmem="4096 87380 4194304"
+	#net.ipv4.tcp_wmem="4096 65536 4194304"
+	#为TCP启用低延迟模式
+	#net.ipv4.tcp_low_latency=1
+	#将套接字缓冲区设置为在TCP窗口大小和应用程序缓冲区之间平均分配
+	#net.ipv4.tcp_adv_win_scale=1
 
 	#关闭selinux
 	setenforce 0
