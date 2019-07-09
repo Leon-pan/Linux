@@ -123,20 +123,16 @@ Install_NTP() {
 		read -p "Do you want to continue [Y/N]?" answer
 		case $answer in
 		Y | y)
-			mkdir /root/yum_bak > /dev/null 2>&1
-			mv -f /etc/yum.repos.d/* /root/yum_bak
 			cat > /etc/yum.repos.d/ntp.repo <<- 'EOF'
 				[local-ntp]
 				name=ntp
 				baseurl=file:///root/ntp/
-				enabled=1
 				gpgcheck=0
 			EOF
-			yum -y install ntp
+			yum --disablerepo=\* --enablerepo=local-ntp -y install ntp
 			echo -e "${GREEN}正在启动ntp，请稍等~${RES}"
 			systemctl start ntp
 			systemctl enable ntp > /dev/null 2>&1
-			\cp -f /root/yum_bak/* /etc/yum.repos.d/
 			echo -e "${GREEN}执行完毕~${RES}"
 			;;
 		N | n)
@@ -162,19 +158,15 @@ Install_HTTP() {
 		read -p "Do you want to continue [Y/N]?" answer
 		case $answer in
 		Y | y)
-			mkdir /root/yum_bak > /dev/null 2>&1
-			mv -f /etc/yum.repos.d/* /root/yum_bak
 			cat > /etc/yum.repos.d/httpd.repo <<- 'EOF'
 				[local-httpd]
 				name=httpd
 				baseurl=file:///root/httpd/
-				enabled=1
 				gpgcheck=0
 			EOF
-			yum -y install httpd
+			yum --disablerepo=\* --enablerepo=local-httpd -y install httpd
 			echo -e "${GREEN}正在启动httpd，请稍等~${RES}"
 			systemctl start httpd
-			\cp -f /root/yum_bak/* /etc/yum.repos.d/
 			echo -e "${GREEN}执行完毕~${RES}"
 			;;
 		N | n)
@@ -199,21 +191,17 @@ Install_MYSQL5.6() {
 		read -p "Do you want to continue [Y/N]?" answer
 		case $answer in
 		Y | y)
-			mkdir /root/yum_bak > /dev/null 2>&1
-			mv -f /etc/yum.repos.d/* /root/yum_bak
 			cat > /etc/yum.repos.d/mysql56.repo <<- 'EOF'
 				# Enable to use MySQL 5.6
 				[local-mysql56-community]
 				name=MySQL 5.6 Community Server
 				baseurl=file:///root/mysql5.6
-				enabled=1
 				gpgcheck=0
 			EOF
-			yum -y install mysql-server
+			yum --disablerepo=\* --enablerepo=local-mysql56-community -y install mysql-server
 			echo -e "${GREEN}正在启动mysqld，请稍等~${RES}"
 			systemctl start mysqld
 			systemctl enable mysqld > /dev/null 2>&1
-			\cp -f /root/yum_bak/* /etc/yum.repos.d/
 			#passwd=`grep 'temporary password' /var/log/mysqld.log |awk '{print $NF}'`
 			#echo -e  "${GREEN}MYSQL root用户密码为:$passwd${RES}"
 			echo -e "${GREEN}请设置MYSQL root用户密码${RES}"
@@ -255,54 +243,42 @@ Install_CMS() {
 			case $answer in
 			Y | y)
 				#本地已安装httpd服务，建立cm的内网yum源
-				mkdir /root/yum_bak > /dev/null 2>&1
-				mv -f /etc/yum.repos.d/* /root/yum_bak
 				mv -f cm* cm > /dev/null 2>&1
 				\cp -rf cm /var/www/html
 				read -p "请输入本机的地址：" localhostip
 				#该处EOF加单引号会使localhostip变量失效
 				cat > /etc/yum.repos.d/cm.repo <<- EOF
-					[local-cm]
+					[local-cloudera-manager]
 					name=Cloudera Manager
 					baseurl=http://$localhostip/cm
-					enabled=1
 					gpgcheck=0
 				EOF
 				Yum_Install
-				\cp -f /root/yum_bak/* /etc/yum.repos.d/
 				;;
 			N | n)
 				#本地已安装httpd服务，但不建立cm的内网yum源
-				mkdir /root/yum_bak > /dev/null 2>&1
-				mv -f /etc/yum.repos.d/* /root/yum_bak
 				mv -f cm* cm > /dev/null 2>&1
 				cat > /etc/yum.repos.d/cm.repo <<- 'EOF'
-					[local-cm]
+					[local-cloudera-manager]
 					name=Cloudera Manager
 					baseurl=file:///root/cm
-					enabled=1
 					gpgcheck=0
 				EOF
 				Yum_Install
-				\cp -f /root/yum_bak/* /etc/yum.repos.d/
 				;;
 			*)
 				echo -e "${RED}ERROR${RES}"
 				;;
 			esac
 		else
-			mkdir /root/yum_bak > /dev/null 2>&1
-			mv -f /etc/yum.repos.d/* /root/yum_bak
 			mv -f cm* cm > /dev/null 2>&1
 			cat > /etc/yum.repos.d/cm.repo <<- 'EOF'
-				[local-cm]
+				[local-cloudera-manager]
 				name=Cloudera Manager
 				baseurl=file:///root/cm
-				enabled=1
 				gpgcheck=0
 			EOF
 			Yum_Install
-			\cp -f /root/yum_bak/* /etc/yum.repos.d/
 		fi
 	else
 		#本地未检测到cm安装包
@@ -314,12 +290,12 @@ Install_CMS() {
 			enabled=1
 			gpgcheck = 0
 		EOF
-		Yum_Install
+		yum -y install cloudera-manager-server cloudera-manager-daemons
 	fi
 }
 
 Yum_Install() {
-	yum -y install cloudera-manager-server cloudera-manager-daemons
+	yum --disablerepo=\* --enablerepo=local-cloudera-manager -y install cloudera-manager-server cloudera-manager-daemons
 	if [ -f *mysql-connector-java* ]; then
 		echo -e "${GREEN}检测到mysql-connector-java开始初始化CM5的数据库${RES}"
 		\cp -f mysql-connector-java-*.jar /usr/share/cmf/lib/
