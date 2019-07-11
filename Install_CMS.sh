@@ -301,6 +301,7 @@ Yum_Install() {
 		\cp -f mysql-connector-java-*.jar /usr/share/cmf/lib/
 		mkdir -p /usr/share/java
 		\cp -f mysql-connector-java-*.jar /usr/share/java/
+		chmod 777 /usr/share/java/mysql-connector-java-*.jar
 		ln -s /usr/share/java/mysql-connector-java-*.jar /usr/share/java/mysql-connector-java.jar
 		##全局_jdbc
 		#\cp -f mysql-connector-java-*.jar /usr/java/jdk1.8/jre/lib/ext
@@ -322,6 +323,8 @@ Yum_Install() {
 		/usr/share/cmf/schema/scm_prepare_database.sh mysql scm -h$mysqlip -uroot -p --scm-host localhost scm scm scm
 		#sudo /opt/cloudera/cm/schema/scm_prepare_database.sh mysql scm scm
 		#sudo /opt/cloudera/cm/schema/scm_prepare_database.sh mysql -h db01.example.com --scm-host cm01.example.com scm scm
+		#CM6
+		#/opt/cloudera/cm/schema/scm_prepare_database.sh
 		echo -e "${GREEN}正在启动Cloudera Manager Server，请稍等~${RES}"
 		systemctl start cloudera-scm-server
 		echo -e "${GREEN}执行完毕~${RES}"
