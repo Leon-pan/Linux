@@ -65,7 +65,7 @@ fdfs_upload_file /etc/fdfs/client.conf /tmp/test.jpg
 
 
 #nginx
-cd nginx-1.8.1
+cd nginx-1.16.0
 ./configure --prefix=/usr/local/nginx --add-module=../fastdfs-nginx-module-master/src
 make & make install
 
