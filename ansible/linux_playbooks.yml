@@ -1,0 +1,39 @@
+---
+# file: linux_playbooks.yml 适用linux系统
+- hosts: linux
+  vars:
+    - control_linux_path: /root/update
+    - linux_path: /tmp/hl_bizdemo/files/update
+# remote_user: develop
+  tasks:
+    - name: test connection
+      ping:
+      tags:
+      - always
+      
+    - name: del directory path/incremental/
+      file: path={{linux_path}}/incremental/ state=directory state=absent
+      tags:
+      - zengliang
+
+    - name: del file path/incremental/hl_bizdemo.jar
+      file: path={{linux_path}}/hl_bizdemo.jar state=absent
+      tags:
+      - quanliang
+
+    - name: copy directory incremental
+      copy: src={{control_linux_path}}/incremental dest={{linux_path}}
+      ignore_errors: True
+      tags:
+      - zengliang
+
+    - name: copy file hl_bizdemo.jar
+      copy: src={{control_linux_path}}/hl_bizdemo.jar dest={{linux_path}}/hl_bizdemo.jar
+      ignore_errors: True
+      tags:
+      - quanliang
+
+    - name: exec sh
+      raw: /tmp/hl_bizdemo/bin/updateServer.sh
+      tags:
+      - always

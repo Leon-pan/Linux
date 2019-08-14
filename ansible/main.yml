@@ -1,0 +1,5 @@
+---
+# file: main.yml 同时执行两个子剧本，tags为可选项（增量or全量）
+# ansible-playbook main.yml --tags="zengliang or quanliang"
+- include: linux_playbooks.yml
+- include: windows_playbooks.yml
