@@ -33,16 +33,21 @@ rpm -Uvh https://repo.zabbix.com/zabbix/4.0/rhel/7/x86_64/zabbix-release-4.0-1.e
 yum -y install zabbix-agent
 
 
+#Server：用于指定允许哪台服务器拉取当前服务器的数据，当agent端工作于被动模式，则代表server端会主动拉取agent端数据，那么server端的IP必须与此参数的IP对应，此参数用于实现基于IP的访问控制，如果有多个IP ,可以使用逗号隔开。
 sed -i '/^Server=/c\Server=10.1.70.187' /etc/zabbix/zabbix_agentd.conf
+
+#ServerActive：此参数用于指定当agent端工作于主动模式时，将信息主动推送到哪台server上，当有多个IP时，可以用逗号隔开。
 sed -i '/^ServerActive=/c\ServerActive=10.1.70.187' /etc/zabbix/zabbix_agentd.conf
+
+#Hostname：此参数用于指定当前主机的主机名，server端通过此参数对应的主机名识别当前主机。客户端的名称，要和在网页中配置的名称一致
 sed -i "/^Hostname=/c\Hostname=`hostname`" /etc/zabbix/zabbix_agentd.conf
+
 #自动注册使用
 #sed -i '/^# HostMetadataItem=/c\HostMetadataItem=system.uname' /etc/zabbix/zabbix_agentd.conf
 
+#Zabbix客户端主动式使用,设置为0，则禁用被动检查，并且代理将不会侦听任何TCP端口
+#sed -i '/^# StartAgents=/c\StartAgents=0' /etc/zabbix/zabbix_agentd.conf
 
-Server：用于指定允许哪台服务器拉取当前服务器的数据，当agent端工作于被动模式，则代表server端会主动拉取agent端数据，那么server端的IP必须与此参数的IP对应，此参数用于实现基于IP的访问控制，如果有多个IP ,可以使用逗号隔开。
-ServerActive：此参数用于指定当agent端工作于主动模式时，将信息主动推送到哪台server上，当有多个IP时，可以用逗号隔开。
-Hostname：此参数用于指定当前主机的主机名，server端通过此参数对应的主机名识别当前主机。客户端的名称，要和在网页中配置的名称一致
 
 systemctl restart zabbix-agent
 systemctl enable zabbix-agent
