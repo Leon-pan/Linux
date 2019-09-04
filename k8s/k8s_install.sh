@@ -151,15 +151,38 @@ kubectl apply -f kubernetes-dashboard.yaml
 
 kubectl proxy
 
+#添加admin用户
+vi dashboard-adminuser.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kube-system
+
+kubectl create -f dashboard-adminuser.yaml
+
+#绑定admin用户组
+vi admin-user-role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kube-system
+
+kubectl create -f admin-user-role-binding.yaml
+
 #访问URL
 http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
 
-
-
 #获取token
 kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
-
-kubectl -n kube-system describe $(kubectl -n kube-system get secret -n kube-system -o name | grep namespace) | grep token
 
 kubectl proxy --address='0.0.0.0'  --accept-hosts='^*$'
 
