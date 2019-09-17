@@ -128,6 +128,7 @@ Install_NTP() {
 				name=ntp
 				baseurl=file:///root/ntp/
 				gpgcheck=0
+				enabled=0
 			EOF
 			yum --disablerepo=\* --enablerepo=local-ntp -y install ntp
 			echo -e "${GREEN}正在启动ntp，请稍等~${RES}"
@@ -163,6 +164,7 @@ Install_HTTP() {
 				name=httpd
 				baseurl=file:///root/httpd/
 				gpgcheck=0
+				enabled=0
 			EOF
 			yum --disablerepo=\* --enablerepo=local-httpd -y install httpd
 			echo -e "${GREEN}正在启动httpd，请稍等~${RES}"
@@ -197,6 +199,7 @@ Install_MYSQL5.6() {
 				name=MySQL 5.6 Community Server
 				baseurl=file:///root/mysql5.6
 				gpgcheck=0
+				enabled=0
 			EOF
 			yum --disablerepo=\* --enablerepo=local-mysql56-community -y install mysql-server
 			echo -e "${GREEN}正在启动mysqld，请稍等~${RES}"
@@ -252,6 +255,7 @@ Install_CMS() {
 					name=Cloudera Manager
 					baseurl=http://$localhostip/cm
 					gpgcheck=0
+					enabled=0
 				EOF
 				Yum_Install
 				;;
@@ -263,6 +267,7 @@ Install_CMS() {
 					name=Cloudera Manager
 					baseurl=file:///root/cm
 					gpgcheck=0
+					enabled=0
 				EOF
 				Yum_Install
 				;;
@@ -277,6 +282,7 @@ Install_CMS() {
 				name=Cloudera Manager
 				baseurl=file:///root/cm
 				gpgcheck=0
+				enabled=0
 			EOF
 			Yum_Install
 		fi
