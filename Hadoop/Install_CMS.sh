@@ -326,7 +326,7 @@ Yum_Install() {
 		echo -e "${GREEN}初始化CM5的数据库，请输入数据库服务器的地址${RES}"
 		read -p "（默认：localhost回车即可）：" mysqlip
 		[ -z "${mysqlip}" ] && mysqlip="localhost"
-		/usr/share/cmf/schema/scm_prepare_database.sh mysql scm -h$mysqlip -uroot -p --scm-host localhost scm scm scm
+		/usr/share/cmf/schema/scm_prepare_database.sh mysql scm -h$mysqlip -uroot -p --scm-host localhost scm scm
 		#sudo /opt/cloudera/cm/schema/scm_prepare_database.sh mysql scm scm
 		#sudo /opt/cloudera/cm/schema/scm_prepare_database.sh mysql -h db01.example.com --scm-host cm01.example.com scm scm
 		#CM6
