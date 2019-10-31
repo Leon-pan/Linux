@@ -20,6 +20,12 @@
       tags:
       - quanliang
 
+    - name: bak file hl_bizdemo.jar
+      raw: copy {{windows_path}}\..\..\lib\hl_bizdemo.jar {{windows_path}}\..\bak\hl_bizdemo_{{ansible_date_time['iso8601_basic_short']}}.jar
+      ignore_errors: True
+      tags:
+      - always
+
     - name: copy directory incremental
       win_copy: src={{linux_path}}/incremental dest={{windows_path}}
       ignore_errors: True
