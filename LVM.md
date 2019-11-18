@@ -43,7 +43,7 @@
 pv不够的话先加pv
 >pvcreate /dev/vdc
 
-### vgentend
+#### vgentend
 
 >vgentend vgname /dev/vdc
 >vgs
@@ -52,7 +52,7 @@ pv不够的话先加pv
 
 通常先做数据的迁移
 
-### 查看当前VG中PV的使用情况
+#### 查看当前VG中PV的使用情况
 
 >pvs
 
@@ -62,7 +62,7 @@ PV       VG    Fmt  Attr  PSize  PFree
 /dev/vde  vg1  lvm2 a--   2.00g 2.00g
 ```
 
-### pvmove数据到其他PV
+#### pvmove数据到其他PV
 
 >pvmove /dev/vdd
 
@@ -75,11 +75,13 @@ PV       VG    Fmt  Attr  PSize  PFree
 /dev/vde  vg1  lvm2 a--   2.00g 1.76g
 ```
 
-### vgreduce VG
+#### vgreduce VG
 
 >vgreduce vgname /dev/vdd
 
-## LV扩容
+## LV管理
+
+### LV扩容
 
 查看
 >vgs
@@ -97,17 +99,17 @@ PV       VG    Fmt  Attr  PSize  PFree
 >
 >lvscan
 
-### FS扩容
+#### FS扩容
 
-#### xfs
+##### xfs
 
 >xfs_growfs /dev/vgname/lvname
 
-#### ext2/3/4
+##### ext2/3/4
 
 >resize2fs /dev/vgname/lvname
 
-### LVM缩容
+### LV缩容
 
 #### xfs备份
 
