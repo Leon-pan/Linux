@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 #by pjl
 
+set -e
 GREEN='\E[1;32m' #绿
 RED='\E[1;31m'   #红
 RES='\E[0m'
