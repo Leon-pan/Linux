@@ -1,9 +1,15 @@
 /data01/app/hldc/logs/catalina.out {
+    #创建副本后截断日志
     copytruncate
+    #每天
     daily
+    #保留滚动的数量
     rotate 3
+    #日志文件不存在也不会报错
     missingok
+    #启用gzip压缩
     compress
+    #达到指定容量时才轮转
     size 16M
 }
 

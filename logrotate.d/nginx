@@ -1,11 +1,19 @@
 /usr/local/nginx/logs/*.log {
+    #每月
     monthly
+    #以后缀YYYYMMDD格式命名滚动日志
     dateext
+    #日志文件不存在也不会报错
     missingok
+    #保留滚动的数量
     rotate 2
+    #启用gzip压缩
     compress
+    #如果日志文件为空，则不转储;
     notifempty
+    #共享脚本,让postrotate/endscript包含脚本只执行一次
     sharedscripts
+    #滚动日志后的操作
     postrotate
     if [ -f /usr/local/nginx/logs/nginx.pid ]; then
         kill -USR1 `cat /usr/local/nginx/logs/nginx.pid`
