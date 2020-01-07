@@ -187,7 +187,7 @@ Install_HTTP() {
 	fi
 }
 
-Install_MYSQL5.6() {
+Install_MYSQL56() {
 	#安装MYSQL并设置开机启动
 	if [ -d *mysql5.6* ]; then
 		echo -e "${GREEN}检测到mysql5.6，开始配置本地yum源${RES}"
@@ -344,6 +344,7 @@ date
 #用户、目录检查
 user=$(whoami)
 dir=$(dirname $(readlink -f $0))
+#dir=$(cd `dirname $0`; pwd)
 if [ ! "$user" == "root" ] || [ ! "$dir" == /root ]; then
 	echo -e "${RED}当前用户或目录不为root${RES}"
 	exit 1
@@ -379,7 +380,7 @@ case "$num" in
 	Install_HTTP
 	;;
 7)
-	Install_MYSQL5.6
+	Install_MYSQL56
 	;;
 8)
 	Install_CMS
