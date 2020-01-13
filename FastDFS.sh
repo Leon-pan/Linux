@@ -55,6 +55,7 @@ fdfs_monitor /etc/fdfs/storage.conf
 
 
 #tracker_client
+mkdir -p /home/fastdfs/client
 cp /etc/fdfs/client.conf.sample /etc/fdfs/client.conf
 vi /etc/fdfs/client.conf
 base_path=/data/fastdfs/client
