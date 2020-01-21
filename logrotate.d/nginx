@@ -11,7 +11,7 @@
     compress
     #如果日志文件为空，则不转储;
     notifempty
-    #共享脚本,让postrotate/endscript包含脚本只执行一次
+    #共享脚本,让所有日志都轮转后统一执行一次脚本，postrotate/endscript包含脚本只执行一次
     sharedscripts
     #滚动日志后的操作
     postrotate

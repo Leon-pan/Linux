@@ -1,10 +1,10 @@
 /data01/app/hldc/logs/catalina.out {
-    #创建副本后截断日志
+    #创建副本后清空日志，可能会有部分日志丢失（日志在拷贝完到清空文件这段时间内，程序输出的日志没有备份就清空了）
     copytruncate
     #每天
     daily
     #保留滚动的数量
-    rotate 3
+    rotate 7
     #日志文件不存在也不会报错
     missingok
     #启用gzip压缩
