@@ -13,8 +13,7 @@ cd fastdfs-master
 
 mkdir -p /data/fastdfs/tracker
 cp /etc/fdfs/tracker.conf.sample /etc/fdfs/tracker.conf
-vi /etc/fdfs/tracker.conf
-base_path=/data/fastdfs/tracker
+sed -i '/^base_path=/c\base_path=/data/fastdfs/tracker' /etc/fdfs/tracker.conf
 
 /etc/init.d/fdfs_trackerd start
 systemctl status fdfs_trackerd
@@ -37,12 +36,11 @@ cd fastdfs-master
 
 mkdir -p /data/fastdfs/storage
 cp /etc/fdfs/storage.conf.sample /etc/fdfs/storage.conf
-vi /etc/fdfs/storage.conf
 #group_name=group1 or group2
-base_path=/data/fastdfs/storage
-store_path0=/data/fastdfs/storage
-tracker_server=10.1.70.91:22122
-tracker_server=10.1.70.92:22122
+sed -i '/^base_path=/c\base_path=/data/fastdfs/storage' /etc/fdfs/storage.conf
+sed -i '/^store_path0=/c\store_path0=/data/fastdfs/storage' /etc/fdfs/storage.conf
+sed -i '/^tracker_server=/c\tracker_server=10.1.70.91:22122' /etc/fdfs/storage.conf
+#tracker_server=10.1.70.92:22122
 
 
 /etc/init.d/fdfs_storaged start
@@ -57,10 +55,9 @@ fdfs_monitor /etc/fdfs/storage.conf
 #tracker_client
 mkdir -p /home/fastdfs/client
 cp /etc/fdfs/client.conf.sample /etc/fdfs/client.conf
-vi /etc/fdfs/client.conf
-base_path=/data/fastdfs/client
-tracker_server=10.1.70.91:22122
-tracker_server=10.1.70.92:22122
+sed -i '/^base_path=/c\base_path=/data/fastdfs/client' /etc/fdfs/client.conf
+sed -i '/^tracker_server=/c\tracker_server=10.1.70.91:22122' /etc/fdfs/client.conf
+#tracker_server=10.1.70.92:22122
 
 fdfs_upload_file /etc/fdfs/client.conf /tmp/test.jpg
 
