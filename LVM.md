@@ -95,7 +95,7 @@ PV       VG    Fmt  Attr  PSize  PFree
 >
 >lvextend -l 15 /dev/vgname/lvname
 >
->lvextend -l +15 /dev/vgname/lvname
+>lvextend -l +15FREE /dev/vgname/lvname
 >
 >lvscan
 
@@ -146,7 +146,7 @@ vgdisplay
 
 
 # 格式： lvcreate -n 逻辑卷名 -L 逻辑卷大小 卷组名
-lvcreate -l 100%VG -n data_oracle datavg
+lvcreate -l 100%FREE -n data_oracle datavg
 # 查看已经创建的逻辑卷
 lvdisplay
 
