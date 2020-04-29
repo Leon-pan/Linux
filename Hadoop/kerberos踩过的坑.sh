@@ -81,7 +81,7 @@ ktadd -kt admin.keytab admin/admin@HADOOP.COM
 
 klist
 
-Hue
+#Hue
 Kerberos Ticket Renewer服务启动报错
 kadmin.local:  modprinc -maxrenewlife 90day krbtgt/HADOOP.COM@HADOOP.COM
 
@@ -90,6 +90,11 @@ kadmin.local:  modprinc -maxrenewlife 90day +allow_renewable hue/namenode01.hado
 
 #新增admin用户，并加入hadoop组(hadoop组需已存在)
 useradd -g hadoop admin
+
+
+#Hive
+beeline
+!connect jdbc:hive2://namenode01.hadoop:10000/;principal=hive/namenode01.hadoop@60HADOOP.COM
 
 
 配置更改项：
