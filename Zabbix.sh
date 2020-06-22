@@ -59,5 +59,15 @@ mv SIMSUN.ttc SIMSUN.ttf
 ln -s /usr/share/fonts/dejavu/SIMSUN.ttf /etc/alternatives/zabbix-web-font
 
 
-#JMX agent
+#Tomcat JMX agent
 CATALINA_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=12345 -Djava.rmi.server.hostname=host"
+
+
+#JMX监控
+java \
+-Djava.rmi.server.hostname=192.168.3.14 \
+-Dcom.sun.management.jmxremote \
+-Dcom.sun.management.jmxremote.port=12345 \
+-Dcom.sun.management.jmxremote.authenticate=false \
+-Dcom.sun.management.jmxremote.ssl=false \
+-jar /usr/share/doc/openjdk-6-jre-headless/demo/jfc/Notepad/Notepad.jar
