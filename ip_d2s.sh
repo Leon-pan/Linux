@@ -9,7 +9,7 @@ d2s() {
 		echo "error"
 		exit 1
 	fi
-	if [ $check_dhcp != dhcp ]; then
+	if [[ $check_dhcp != dhcp ]]; then
 		echo "非动态地址，退出"
 		exit 0
 	else
