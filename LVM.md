@@ -43,9 +43,9 @@
 pv不够的话先加pv
 >pvcreate /dev/vdc
 
-#### vgentend
+#### vgextend
 
->vgentend vgname /dev/vdc
+>vgextend vgname /dev/vdc
 >vgs
 
 ### 减小VG vgreduce
@@ -95,7 +95,7 @@ PV       VG    Fmt  Attr  PSize  PFree
 >
 >lvextend -l 15 /dev/vgname/lvname
 >
->lvextend -l +15FREE /dev/vgname/lvname
+>lvextend -l +15%FREE /dev/vgname/lvname
 >
 >lvscan
 

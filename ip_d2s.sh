@@ -3,7 +3,7 @@
 d2s() {
 	network_name=$(ls /etc/sysconfig/network-scripts/ | grep ifcfg | grep -v lo)
 	network_file=/etc/sysconfig/network-scripts/$network_name
-	check_dhcp=$(grep BOOTPROTO $network_file | awk -F = '{print $2}') | tr -d '"' | tr -d "'"
+	check_dhcp=$(grep BOOTPROTO $network_file | awk -F = '{print $2}' | tr -d '"' | tr -d "'")
 	echo "网卡文件路径为$network_file"
 	if [ -z $network_name ]; then
 		echo "error"
