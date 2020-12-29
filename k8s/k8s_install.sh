@@ -1,17 +1,11 @@
-#https://blog.rj-bai.com/post/160.html
-关闭 swap&selinux&firewall
+#https://kubernetes.io/zh/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+#安装docker，k8s官方建议安装docker18.09版本
+## Create /etc/docker
+sudo mkdir /etc/docker
 
 
-#安装docker，k8s官方建议安装docker18.06.2版本
-yum install -y yum-utils device-mapper-persistent-data lvm2
-yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-yum -y install docker-ce-18.06.2.ce-3.el7
-systemctl enable docker.service
-systemctl start docker.service
-
-
-#安装完docker后，k8s官方建议修改存储驱动为overlay2
-cat > /etc/docker/daemon.json <<EOF
+# Set up the Docker daemon
+cat <<EOF | sudo tee /etc/docker/daemon.json
 {
   "exec-opts": ["native.cgroupdriver=systemd"],
   "log-driver": "json-file",
@@ -25,37 +19,16 @@ cat > /etc/docker/daemon.json <<EOF
 }
 EOF
 
-#重启docker
-systemctl daemon-reload
-systemctl restart docker
+
+# Create /etc/systemd/system/docker.service.d
+sudo mkdir -p /etc/systemd/system/docker.service.d
 
 
-修改hosts
+# Restart Docker
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+sudo systemctl enable docker
 
-
-#全部服务器执行，将桥接的 IPv4 流量传递到 iptables
-cat > /etc/sysctl.d/k8s.conf <<OEF
-net.bridge.bridge-nf-call-ip6tables = 1
-net.bridge.bridge-nf-call-iptables = 1
-OEF
-
-sysctl --system
-
-
-#加载 IPVS 模块，全部服务器执行
-cat > /etc/sysconfig/modules/ipvs.modules <<EOF
-#!/bin/bash
-modprobe -- ip_vs
-modprobe -- ip_vs_rr
-modprobe -- ip_vs_wrr
-modprobe -- ip_vs_sh
-modprobe -- nf_conntrack_ipv4
-EOF
-
-chmod 755 /etc/sysconfig/modules/ipvs.modules && bash /etc/sysconfig/modules/ipvs.modules && lsmod | grep -e ip_vs -e nf_conntrack_ipv4
-
-
-#安装 kubelet/kubeadm/kubectl
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -66,9 +39,43 @@ repo_gpgcheck=0
 gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
 EOF
 
-#安装完后将重新编译后有十年有效期的kubeadm替换/usr/bin/下的kubeadm
-yum install -y kubelet-1.15.3 kubeadm-1.15.3 kubectl-1.15.3 --disableexcludes=kubernetes
-#yum -y install ipvsadm  ipset
+# 将 SELinux 设置为 permissive 模式（相当于将其禁用）
+setenforce 0
+sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+
+yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+
+systemctl enable --now kubelet
+
+
+#CentOS 7可能遇到由于iptables被绕过而导致流量无法正确路由的问题
+cat <<EOF >  /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sysctl --system
+
+
+#拉镜像，再重新tag
+docker pull gotok8s/kube-apiserver:v1.20.1
+docker pull gotok8s/kube-controller-manager:v1.20.1
+docker pull gotok8s/kube-scheduler:v1.20.1
+docker pull gotok8s/kube-proxy:v1.20.1
+docker pull gotok8s/pause:3.2
+docker pull gotok8s/etcd:3.4.13-0
+docker pull coredns/coredns:1.7.0
+
+docker tag gotok8s/kube-apiserver:v1.20.1 k8s.gcr.io/kube-apiserver:v1.20.1
+docker tag gotok8s/kube-controller-manager:v1.20.1 k8s.gcr.io/kube-controller-manager:v1.20.1
+docker tag gotok8s/kube-scheduler:v1.20.1 k8s.gcr.io/kube-scheduler:v1.20.1
+docker tag gotok8s/kube-proxy:v1.20.1 k8s.gcr.io/kube-proxy:v1.20.1
+docker tag gotok8s/pause:3.2 k8s.gcr.io/pause:3.2
+docker tag gotok8s/etcd:3.4.13-0 k8s.gcr.io/etcd:3.4.13-0
+docker tag coredns/coredns:1.7.0  k8s.gcr.io/coredns:1.7.0 
+
+
+#初始化控制平面
+kubeadm init --control-plane-endpoint "loadblance:6443" --upload-certs
 
 
 #集群初始化
