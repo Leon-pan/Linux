@@ -222,11 +222,12 @@ Install_MYSQL56() {
 	else
 		cat > /etc/yum.repos.d/mysql56.repo <<- 'EOF'
 			# Enable to use MySQL 5.6
-			[mysql56-community]
+			[mysql-5.6-community]
 			name=MySQL 5.6 Community Server
-			baseurl=http://repo.mysql.com/yum/mysql-5.6-community/el/7/$basearch/
+			baseurl=https://mirrors.tuna.tsinghua.edu.cn/mysql/yum/mysql-5.6-community-el7-$basearch/
 			enabled=1
 			gpgcheck=0
+			gpgkey=https://repo.mysql.com/RPM-GPG-KEY-mysql
 		EOF
 		yum -y install mysql-server
 		echo -e "${GREEN}正在启动mysqld，请稍等~${RES}"

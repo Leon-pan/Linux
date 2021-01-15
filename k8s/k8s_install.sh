@@ -71,38 +71,15 @@ docker tag gotok8s/kube-scheduler:v1.20.1 k8s.gcr.io/kube-scheduler:v1.20.1
 docker tag gotok8s/kube-proxy:v1.20.1 k8s.gcr.io/kube-proxy:v1.20.1
 docker tag gotok8s/pause:3.2 k8s.gcr.io/pause:3.2
 docker tag gotok8s/etcd:3.4.13-0 k8s.gcr.io/etcd:3.4.13-0
-docker tag coredns/coredns:1.7.0  k8s.gcr.io/coredns:1.7.0 
+docker tag coredns/coredns:1.7.0  k8s.gcr.io/coredns:1.7.0
 
 
 #初始化控制平面
-kubeadm init --control-plane-endpoint "loadblance:6443" --upload-certs
+kubeadm init --control-plane-endpoint "k8s.citydo.com.cn:6443" --upload-certs --pod-network-cidr 10.244.0.0/16
 
 
-#集群初始化
-[root@k8s ~]# vi kubeadm.yaml 
-apiServer:
-  extraArgs:
-    authorization-mode: Node,RBAC
-  timeoutForControlPlane: 4m0s
-apiVersion: kubeadm.k8s.io/v1beta2
-certificatesDir: /etc/kubernetes/pki
-clusterName: kubernetes
-dns:
-  type: CoreDNS
-etcd:
-  local:
-    dataDir: /var/lib/etcd
-imageRepository: gcr.azk8s.cn/google_containers
-kind: ClusterConfiguration
-kubernetesVersion: v1.15.3
-networking:
-  dnsDomain: cluster.local
-  serviceSubnet: 10.1.0.0/16
-  podSubnet: 10.244.0.0/16
----
-apiVersion: kubeproxy.config.k8s.io/v1alpha1
-kind: KubeProxyConfiguration
-mode: ipvs
+#集群POD初始化
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
 
 #设置开机自启，并初始化
