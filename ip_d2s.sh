@@ -25,7 +25,8 @@ d2s() {
 			IPADDR=$ip
 			PREFIX=22
 			GATEWAY=172.16.27.254
-			DNS1=114.114.114.114
+			DNS1=202.101.172.35
+			DNS2=114.114.114.114
 		EOF
 		echo "开始重启网卡..."
 		systemctl restart network
