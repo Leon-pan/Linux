@@ -32,11 +32,11 @@ sudo systemctl enable docker
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
 enabled=1
 gpgcheck=0
 repo_gpgcheck=0
-gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
 EOF
 
 # 将 SELinux 设置为 permissive 模式（相当于将其禁用）
@@ -55,6 +55,31 @@ net.bridge.bridge-nf-call-iptables = 1
 net.ipv4.ip_forward=1
 EOF
 sysctl --system
+
+
+#加载 IPVS 模块，性能优于iptables
+#安装ipvs客户端
+yum install ipvsadm
+#Linux内核4.19和更高版本中使用nf_conntrack代替nf_conntrack_ipv4
+cat > /etc/sysconfig/modules/ipvs.modules <<EOF
+#!/bin/bash
+modprobe -- ip_vs
+modprobe -- ip_vs_rr
+modprobe -- ip_vs_wrr
+modprobe -- ip_vs_sh
+modprobe -- nf_conntrack_ipv4
+EOF
+
+chmod 755 /etc/sysconfig/modules/ipvs.modules && bash /etc/sysconfig/modules/ipvs.modules && lsmod | grep -e ip_vs -e nf_conntrack_ipv4
+
+#使用kubeadm安装时在配置文件添加以下部分使用ipvs
+...
+kubeProxy:
+  config:
+    mode: ipvs
+...
+
+kubeadm init --config <path_to_configuration_file>
 
 
 #拉镜像，再重新tag
@@ -79,10 +104,6 @@ docker tag coredns/coredns:1.7.0  k8s.gcr.io/coredns:1.7.0
 kubeadm init --control-plane-endpoint "k8s.citydo.com.cn:6443" --upload-certs --pod-network-cidr 10.244.0.0/16
 
 
-#集群POD初始化
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-
-
 #设置开机自启，并初始化
 systemctl enable kubelet.service
 kubeadm init --config kubeadm.yaml
@@ -105,8 +126,7 @@ kubeadm token list
 openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
 
 
-#coredns 处于 pending 状态，所以现在需要部署一下容器的网络，用 flannel
-kubectl apply -f kube-flannel.yml
+
 
 
 #查看节点和容器状态
