@@ -124,10 +124,6 @@ net.ipv4.tcp_syncookies=1
 net.ipv4.tcp_fin_timeout=30
 net.ipv4.tcp_synack_retries=2
 kernel.sysrq=1
-
-#ipvs https://blog.csdn.net/bh1231/article/details/100947990
-net.netfilter.nf_conntrack_max=1048576
-net.nf_conntrack_max=1048576
 EOF
 
 sysctl -p
@@ -169,6 +165,17 @@ modprobe -- nf_conntrack_ipv4
 EOF
 
 chmod 755 /etc/sysconfig/modules/ipvs.modules && bash /etc/sysconfig/modules/ipvs.modules && lsmod | grep -e ip_vs -e nf_conntrack_ipv4
+
+
+#ipvs优化
+cat <<EOF >> /etc/sysctl.conf
+#ipvs https://blog.csdn.net/bh1231/article/details/100947990
+net.netfilter.nf_conntrack_max=1048576
+net.nf_conntrack_max=1048576
+net.ipv4.tcp_keepalive_time=600
+net.ipv4.tcp_keepalive_probes=10
+net.ipv4.tcp_keepalive_intvl=30
+EOF
 
 
 #集群配置文件
