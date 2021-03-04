@@ -235,6 +235,7 @@ kubeadm config images pull --config init.yaml
 
 #初始化集群
 kubeadm init --config init.yaml --upload-certs
+#--image-repository registry.aliyuncs.com/google_containers
 
 
 #配置环境变量，用于访问Kubernetes集群

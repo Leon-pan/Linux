@@ -139,6 +139,7 @@ spec:
             - --requestheader-group-headers=X-Remote-Group
             - --requestheader-extra-headers-prefix=X-Remote-Extra-
           image: registry.cn-hangzhou.aliyuncs.com/pjl/metrics-server:v0.4.2
+          #image: k8s.gcr.io/metrics-server/metrics-server:v0.4.2
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
