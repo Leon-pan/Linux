@@ -25,5 +25,6 @@ chmod 600 /etc/ssh/ssh_host_rsa_key /etc/ssh/ssh_host_ecdsa_key /etc/ssh/ssh_hos
 make install
 sed -i '/^#UsePAM/c\UsePAM yes' /etc/ssh/sshd_config
 #PermitRootLogin默认禁止root远程登录
+sed -i '/^#PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
 #重启：
 service sshd restart
