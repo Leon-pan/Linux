@@ -4,11 +4,11 @@
 cp -r /etc/ssh{,.old_$(date '+%F')}
 cp /etc/pam.d/sshd{,.old_$(date '+%F')}
 #解压
-tar -zvxf openssh-7.9p1.tar.gz
+tar -zvxf openssh-8.5p1.tar.gz
 #yum安装依赖
-yum install gcc zlib-devel openssl-devel pam-devel -y
+#yum install gcc zlib-devel openssl-devel pam-devel -y
 #配置
-cd openssh-7.9p1
+cd openssh-8.5p1
 ./configure --prefix=/usr/ --sysconfdir=/etc/ssh/ --with-md5-passwords --with-pam mandir=/usr/share/man/
 #编译
 make
