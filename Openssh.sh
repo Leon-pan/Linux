@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#安装telnet，防止翻车
+yum install -y telnet-server
+echo -e "pts/0\npts/1" >> /etc/securetty
+systemctl enable --now telnet.socket
+systemctl disable --now firewalld
+
 #备份
 cp -r /etc/ssh{,.old_$(date '+%F')}
 cp /etc/pam.d/sshd{,.old_$(date '+%F')}
@@ -28,3 +34,6 @@ sed -i '/^#UsePAM/c\UsePAM yes' /etc/ssh/sshd_config
 sed -i '/^#PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
 #重启：
 service sshd restart
+
+#安装完成后可以删除telnet
+yum remove -y telnet-server
