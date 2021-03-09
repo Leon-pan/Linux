@@ -292,7 +292,7 @@ Install_CMS() {
 		#本地未检测到cm安装包
 		cat > /etc/yum.repos.d/cloudera-manager.repo <<- 'EOF'
 			[cloudera-manager]
-			# Packages for Cloudera Manager, Version 5, on RedHat or CentOS 7 x86_64           	  
+			# Packages for Cloudera Manager, Version 5, on RedHat or CentOS 7 x86_64              
 			name=Cloudera Manager
 			baseurl=http://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.14.2
 			enabled=1
