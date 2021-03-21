@@ -30,7 +30,8 @@ cat <<EOF | tee /etc/docker/daemon.json
   "storage-driver": "overlay2",
   "storage-opts": [
     "overlay2.override_kernel_check=true"
-  ]
+  ],
+  "live-restore": true
 }
 EOF
 
