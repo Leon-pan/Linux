@@ -305,8 +305,9 @@ Install_CMS() {
 Yum_Install() {
 	yum --disablerepo=\* --enablerepo=local-cloudera-manager -y install cloudera-manager-server cloudera-manager-daemons
 	if [ -f mysql-connector-java-*.jar ]; then
+	    #wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.48/mysql-connector-java-5.1.48.jar
 		echo -e "${GREEN}检测到mysql-connector-java开始初始化CM5的数据库${RES}"
-		\cp -f mysql-connector-java-*.jar /usr/share/cmf/lib/
+		#\cp -f mysql-connector-java-*.jar /usr/share/cmf/lib/
 		mkdir -p /usr/share/java
 		\cp -f mysql-connector-java-*.jar /usr/share/java/
 		chmod 777 /usr/share/java/mysql-connector-java-*.jar
