@@ -155,14 +155,23 @@ sysctl --system
 #加载 IPVS 模块，性能优于iptables
 #安装ipvs客户端
 yum install ipvsadm
-#Linux内核4.19和更高版本中使用nf_conntrack代替nf_conntrack_ipv4
 cat > /etc/sysconfig/modules/ipvs.modules <<EOF
 #!/bin/bash
 modprobe -- ip_vs
 modprobe -- ip_vs_rr
 modprobe -- ip_vs_wrr
 modprobe -- ip_vs_sh
-modprobe -- nf_conntrack_ipv4
+#1.20需要开启br_netfilter
+modprobe -- br_netfilter
+modprobe -- bridge
+
+#Linux内核4.19和更高版本中使用nf_conntrack代替nf_conntrack_ipv4
+kernel_version=$(uname -r | cut -d- -f1)
+if version_ge "${kernel_version}" 4.19; then
+  modprobe -- nf_conntrack
+else
+  modprobe -- nf_conntrack_ipv4
+fi
 EOF
 
 chmod 755 /etc/sysconfig/modules/ipvs.modules && bash /etc/sysconfig/modules/ipvs.modules && lsmod | grep -e ip_vs -e nf_conntrack_ipv4
