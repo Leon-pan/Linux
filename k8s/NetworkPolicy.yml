@@ -1,0 +1,33 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: deny-from-other-namespaces
+spec:
+  podSelector:
+    matchLabels:
+  ingress:
+  - from:
+    - podSelector: {}
+
+---
+
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-prod-namespace
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          purpose: production
+
+
+
+
+#!/bin/bash -e
+
+for namespace in $(kubectl get namespaces -o custom-columns=NAME:.metadata.name --no-headers); do
+  kubectl apply -f NetworkPolicy.yml -n ${namespace}
+done
