@@ -154,7 +154,7 @@ sysctl --system
 
 #加载 IPVS 模块，性能优于iptables
 #安装ipvs客户端
-yum install ipvsadm
+yum install ipvsadm -y
 cat > /etc/sysconfig/modules/ipvs.modules <<'EOF'
 #!/bin/bash
 modprobe -- ip_vs
