@@ -11,6 +11,8 @@ Init() {
 	#/dev/sdb1 /data1 ext4 defaults,noatime 0 0
 	#mount -o remount /data1
 
+	#tuned-adm list
+
 	#磁盘IO测试，常见的SATA读写速度大概在150MB/S-180MB/S，小于70MB/S较弱
 	#dd if=/dev/zero of=/data/test.dbf bs=8k count=200000 conv=fdatasync
 
