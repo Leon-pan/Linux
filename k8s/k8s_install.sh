@@ -53,6 +53,7 @@ EOF
 
 
 #系统调优
+#https://docs.rancher.cn/docs/rancher2/best-practices/optimize/os/_index
 cat <<EOF >> /etc/sysctl.conf
 net.bridge.bridge-nf-call-ip6tables=1
 net.bridge.bridge-nf-call-iptables=1
