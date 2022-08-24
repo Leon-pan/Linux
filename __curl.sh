@@ -16,4 +16,4 @@ function __curl() {
 
 __curl http://httpbin.org
 
-#exec 3<>/dev/tcp/httpbin.org/80 && echo -en "GET / HTTP/1.0\r\nHost: httpbin.org\r\n\r\n" >&3 &&cat <&3
+#exec 3<>/dev/tcp/httpbin.org/80 && echo -en "GET / HTTP/1.0\r\nHost: httpbin.org\r\n\r\n" >&3 &&cat <&3 && exec 3>&-
