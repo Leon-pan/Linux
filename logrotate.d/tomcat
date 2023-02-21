@@ -1,4 +1,6 @@
 /data01/app/hldc/logs/catalina.out {
+    #若目录非root所属，并且权限大于755比如：766或者777，此时会报错
+    su tomcat tomcat
     #创建副本后清空日志，可能会有部分日志丢失（日志在拷贝完到清空文件这段时间内，程序输出的日志没有备份就清空了）
     copytruncate
     #每天
@@ -14,4 +16,9 @@
 }
 
 #测试
-logrotate -vf /etc/logrotate.d/tomcat
+logrotate -df /etc/logrotate.d/tomcat
+
+#若目录非root所属，并且权限大于755比如：766或者777，此时会报错。
+#可以两种方式：
+#logrotate配置文件中增加该目录对应的用户和组：su user group
+#将目录权限设置为755

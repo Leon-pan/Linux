@@ -1,5 +1,6 @@
 #GPT分区大于2T
-parted /dev/sda mkpart ext4 543G 3.7T
+#分区前需要先mklabel gpt创建磁盘标签类型
+parted /dev/sda mkpart ext4 0G 2G
 parted /dev/sdb mklabel gpt mkpart ext4 0% 100%
 lsblk
 
