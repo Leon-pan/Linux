@@ -4,6 +4,8 @@ GREEN='\E[1;32m' #绿
 RED='\E[1;31m'   #红
 RES='\E[0m'
 
+#echo "StrictHostKeyChecking no" > ~/.ssh/config
+
 if [ -z "$1"] || [ -z "$2"]; then
     echo -e "${RED}pleast add hosts file and commond，like ./ssh.sh hosts ls${RES}"
     exit 1
