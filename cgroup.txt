@@ -1,0 +1,46 @@
+#老libcgroup做法
+yum install libcgroup -y 
+yum install libcgroup-tools -y
+
+#/etc/cgconfig.conf
+group users_limit{
+        memory{
+                memory.limit_in_bytes = 1G;
+                memory.memsw.limit_in_bytes = 1G;
+        }
+        cpu {
+                cpu.cfs_quota_us = 50000;
+                cpu.cfs_period_us = 100000;
+        }
+}
+
+#cfs_period_us为一个调度周期的时间
+#cfs_quota_us为一个调度周期内可以使用的时间
+#cfs_quota_us/cfs_period_us=CPU使用率，50000/100000表示可以50%占用一个核心
+
+#/etc/cgrules.conf
+log               cpu,memory          users_limit/
+
+systemctl enable --now cgconfig
+systemctl enable --now cgred
+
+#修改配置后需重启以上两个服务
+systemctl restart cgconfig
+systemctl restart cgred
+
+
+#红帽推荐7以上做法
+systemd-cgls 列出cgroup树
+systemd-cgls memory
+
+systemd-cgtop 监控资源消耗量
+
+id dap
+systemctl set-property user-`id -g log`.slice MemoryLimit=3G
+
+systemctl set-property user-1000.slice CPUQuota=10% MemoryLimit=1G
+
+
+ls /etc/systemd/system.control/
+systemctl daemon-reload
+systemctl list-units

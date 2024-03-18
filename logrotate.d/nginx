@@ -1,4 +1,6 @@
 /usr/local/nginx/logs/*.log {
+    #若目录非root所属，并且权限大于755比如：766或者777，此时会报错
+    su nginx nginx
     #每月
     monthly
     #以后缀YYYYMMDD格式命名滚动日志
@@ -22,4 +24,9 @@
 }
 
 #测试
-logrotate -vf /etc/logrotate.d/nginx
+logrotate -df /etc/logrotate.d/nginx
+
+#若目录非root所属，并且权限大于755比如：766或者777，此时会报错。
+#可以两种方式：
+#logrotate配置文件中增加该目录对应的用户和组：su user group
+#将目录权限设置为755
