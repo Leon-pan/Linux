@@ -1,7 +1,8 @@
 #!/bin/bash
 
-pod=$(kubectl get pods -n antstack | grep -v 'NAME' | grep spanner | grep "Running" | awk '{print "antstack="$1}')
-command=$1
+namespace=$1
+command=$2
+pod=$(kubectl get pods -n $namespace | grep -v 'NAME' | grep "Running" | awk '{print $1}')
 
 case $command in
 help)
@@ -10,40 +11,24 @@ help)
   ;;
 check)
   for i in $pod; do
-    echo $i $0 begin
-    ns=$(echo $i | awk -F'=' '{print $1}')
-    pd=$(echo $i | awk -F'=' '{print $2}')
-    kubectl exec -it -n $ns $pd -- bash -c "tail -n 1 /home/admin/spanner/logs/error.log|grep 'check protocol http error with peer'|grep '2024/03/22'"
+    echo $1:$i $2 begin
+    kubectl exec -it -n $namespace $i -- bash -c "uptime"
     echo "########done########"
   done
   exit 0
   ;;
 update)
   for i in $pod; do
-    echo $i $0 begin
-    ns=$(echo $i | awk -F'=' '{print $1}')
-    pd=$(echo $i | awk -F'=' '{print $2}')
-    #kubectl exec -it -n $ns $pd --  bash -c ""
+    echo $1:$i $2 begin
+    #kubectl exec -it -n $namespace $i --  bash -c ""
     echo "########done########"
   done
   exit 0
   ;;
 rollback)
   for i in $pod; do
-    echo $i $0 begin
-    ns=$(echo $i | awk -F'=' '{print $1}')
-    pd=$(echo $i | awk -F'=' '{print $2}')
-    #kubectl exec -it -n $ns $pd --  bash -c ""
-    echo "########done########"
-  done
-  exit 0
-  ;;
-fasten)
-  for i in $pod; do
-    echo $i $0 begin
-    ns=$(echo $i | awk -F'=' '{print $1}')
-    pd=$(echo $i | awk -F'=' '{print $2}')
-    #kubectl exec -it -n $ns $pd --  bash -c ""
+    echo $1:$i $2 begin
+    #kubectl exec -it -n $namespace $i --  bash -c ""
     echo "########done########"
   done
   exit 0
