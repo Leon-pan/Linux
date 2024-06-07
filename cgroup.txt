@@ -44,3 +44,25 @@ systemctl set-property user-1000.slice CPUQuota=10% MemoryLimit=1G
 ls /etc/systemd/system.control/
 systemctl daemon-reload
 systemctl list-units
+
+
+
+
+
+
+
+vi /etc/systemd/system/user-`id -g log`.slice
+[Slice]
+MemoryLimit=3221225472
+
+systemctl daemon-reload
+
+
+ls /sys/fs/cgroup/memory/user.slice
+
+
+#额外文档yum install -y kernel-doc
+cd /usr/share/doc/kernel-doc-3.10.0/Documentation/cgroups
+
+
+#man systemd.resource-control
