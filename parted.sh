@@ -4,6 +4,8 @@ parted /dev/sda mkpart ext4 0G 2G
 parted /dev/sdb mklabel gpt mkpart ext4 0% 100%
 lsblk
 
+#parted -s /dev/sda mklabel gpt
+#parted /dev/sdb mklabel gpt mkpart ext4 0% 100%
 
 #创建挂载目录
 mkdir /data{01..12}
